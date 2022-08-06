@@ -1,3 +1,3 @@
-# Jelly Examples
+# Jelly Tailwind Template
 
-This repository is an example usage of the [Jelly](https://github.com/yukikurage/purescript-jelly)
+This repository is an template of the [Jelly](https://github.com/yukikurage/purescript-jelly) & tailwind project.
