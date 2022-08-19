@@ -2,7 +2,7 @@ module FizzBuzz where
 
 import Prelude
 
-import Control.Monad.Reader (Reader, ask, asks, runReader)
+import Control.Monad.Reader (Reader, asks, runReader)
 import Data.Array (range)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.String (joinWith)
@@ -18,9 +18,7 @@ buzz = asks \n ->
   else Nothing
 
 fallback :: Reader Int (Maybe String -> String)
-fallback = do
-  n <- ask
-  pure $ fromMaybe (show n)
+fallback = asks $ show >>> fromMaybe
 
 fizzbuzz :: Reader Int String
 fizzbuzz = fallback <*> fizz <> buzz
