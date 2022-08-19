@@ -2,30 +2,32 @@ module Main where
 
 import Prelude
 
-import Contexts (Contexts)
-import Contexts.ColorMode (ColorScheme(..), ColorTarget(..), provideColorMode) as CM
-import Contexts.ColorMode (useColor)
+import Data.Array (catMaybes, fold, range)
+import Data.Functor (mapFlipped)
+import Data.Maybe (Maybe(..))
+import Data.String (joinWith)
+import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
-import Hooks.UseClass (useClass)
 import Jelly (Component, ch, el, launchApp, text)
 
 main :: Effect Unit
-main = do
-  colorMode <- CM.provideColorMode
-  launchApp root { colorMode }
+main = launchApp root unit
 
-root :: Component Contexts
-root = el "div" do
-  useClass $ pure "h-screen w-screen"
+root :: Component Unit
+root = el "pre" $ ch $ text $ pure $ joinWith "\n" $ map fizzBuzz $ range 1 100
 
-  useClass $ pure "flex justify-center items-center"
+fizzBuzzRules :: Array (Int /\ String)
+fizzBuzzRules =
+  [ 3 /\ "Fizz"
+  , 5 /\ "Buzz"
+  ]
 
-  ch $ el "div" do
-    useColor CM.Highlight CM.Text
-    useColor CM.Highlight CM.Background
-
-    useClass $ pure "font-Montserrat text-5xl"
-
-    useClass $ pure "p-4"
-
-    ch $ text $ pure "Hello, Jelly & tailwind!"
+fizzBuzz :: Int -> String
+fizzBuzz i =
+  let
+    matches = mapFlipped fizzBuzzRules \(divisor /\ word) ->
+      if i `mod` divisor == 0 then Just word else Nothing
+  in
+    case catMaybes matches of
+      [] -> show i
+      words -> fold words
